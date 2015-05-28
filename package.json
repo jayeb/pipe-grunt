@@ -1,0 +1,40 @@
+{
+  "name": "pipe-grunt",
+  "version": "1.0.0",
+  "description": "Helper for serializing Grunt tasks without worrying about interstitial file locations.",
+  "files": [
+    "src/pipe-grunt.js"
+  ],
+  "author": {
+    "name": "Jason Eberle",
+    "email": "eberle.jason@gmail.com"
+  },
+  "repository": "jayeb/pipe-grunt",
+  "license": "MIT",
+  "keywords": [
+    "gruntplugin",
+    "pipe",
+    "tasks"
+  ],
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-jscs": "^1.8.0",
+    "reporter-plus": "git://github.com/jayeb/reporter-plus.git",
+    "time-grunt": "^1.2.1"
+  },
+  "scripts": {
+    "jshint": "jshint src/*.js",
+    "jscs": "jscs src/*.js"
+  },
+  "pre-commit": [
+    "jshint",
+    "jscs"
+  ],
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "lodash": "^3.9.3"
+  }
+}
