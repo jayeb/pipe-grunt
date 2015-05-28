@@ -6,14 +6,14 @@ module.exports = function(grunt) {
     name: '<%= pkg.name %>',
 
     jshint: {
-        src: 'src/*.js',
+        src: 'pipe-grunt.js',
         options: {
             jshintrc: '.jshintrc',
             reporter: require('reporter-plus/jshint')
           }
       },
     jscs: {
-        src: 'src/*.js',
+        src: 'pipe-grunt.js',
         options: {
             config: '.jscsrc',
             reporter: require('reporter-plus/jscs').path

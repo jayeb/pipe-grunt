@@ -1,9 +1,10 @@
 {
   "name": "pipe-grunt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Helper for serializing Grunt tasks without worrying about interstitial file locations.",
+  "main": "pipe-grunt",
   "files": [
-    "src/pipe-grunt.js"
+    "pipe-grunt.js"
   ],
   "author": {
     "name": "Jason Eberle",
@@ -24,8 +25,8 @@
     "time-grunt": "^1.2.1"
   },
   "scripts": {
-    "jshint": "jshint src/*.js",
-    "jscs": "jscs src/*.js"
+    "jshint": "jshint pipe-grunt.js",
+    "jscs": "jscs pipe-grunt.js"
   },
   "pre-commit": [
     "jshint",
