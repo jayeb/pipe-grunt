@@ -1,19 +1,20 @@
 module.exports = function(grunt) {
+  var package = grunt.file.readJSON('package.json');
+
   require('time-grunt')(grunt);
 
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    name: '<%= pkg.name %>',
+    name: package.name,
 
     jshint: {
-        src: 'pipe-grunt.js',
+        src: package.files,
         options: {
             jshintrc: '.jshintrc',
             reporter: require('reporter-plus/jshint')
           }
       },
     jscs: {
-        src: 'pipe-grunt.js',
+        src: package.files,
         options: {
             config: '.jscsrc',
             reporter: require('reporter-plus/jscs').path
