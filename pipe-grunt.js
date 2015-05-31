@@ -165,26 +165,27 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
 
     if (taskList.length) {
       // Execute tasks
-      outputFiles = _.reduce(taskList, function executeTasks(srcs, task) {
+      outputFiles = _.reduce(taskList, function executeTasks(srcs, task, taskIndex) {
         var taskInfo = parseTaskInfo(task),
+            taskTarget = pipeTarget + '-' + taskIndex,
             newConfig = {},
             newFiles;
 
         newConfig[taskInfo.task] = {};
-        newConfig[taskInfo.task][pipeTarget] = buildNewConfig(taskInfo);
+        newConfig[taskInfo.task][taskTarget] = buildNewConfig(taskInfo);
 
         if (taskInfo.files !== false && srcs.length) {
-          newFiles = buildFileBlock(taskInfo, srcs, pipeTarget);
-          newConfig[taskInfo.task][pipeTarget].files = newFiles;
+          newFiles = buildFileBlock(taskInfo, srcs, taskTarget);
+          newConfig[taskInfo.task][taskTarget].files = newFiles;
         }
 
         // Apply cloned config
         grunt.config.merge(newConfig);
 
         // Execute the task
-        grunt.task.run(taskInfo.task + ':' + pipeTarget);
+        grunt.task.run(taskInfo.task + ':' + taskTarget);
 
-        grunt.verbose.writeln('Piping ' + taskInfo.full + ' task as ' + pipeTarget);
+        grunt.verbose.writeln('Piping ' + taskInfo.full + ' task as ' + taskTarget);
 
         if (!!newFiles) {
           return _.pluck(newFiles, 'dest');
