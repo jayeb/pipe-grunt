@@ -122,23 +122,23 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
     var normalizedFiles = grunt.task.normalizeMultiTaskFiles(files);
 
     if (preclean) {
-      _.each(normalizedFiles, function(file) {
+      _.each(normalizedFiles, function precleanLoop(file) {
         grunt.file.delete(file.dest);
       });
     }
 
-    _.each(normalizedFiles, function(file) {
+    _.each(normalizedFiles, function copyLoop(file) {
       grunt.file.copy(file.src, file.dest);
     });
 
     if (postclean) {
-      glob.sync(path.join(pipeOptions.tempCwd, '.pipegrunt-*/'), function(errors, dirs) {
-        _.each(dirs, function(dir) {
+      glob.sync(path.join(pipeOptions.tempCwd, '.pipegrunt-*/'), function globLoop(errors, dirs) {
+        _.each(dirs, function postcleanLoop(dir) {
           if (grunt.file.isDir(dir)) {
             grunt.file.delete(dir);
           }
         });
-      };
+      });
     }
   }
 
