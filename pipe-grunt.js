@@ -145,7 +145,7 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
     }
   }
 
-  function pipeTasks(taskList, originalFiles, options) {
+  return function pipeTasks(taskList, originalFiles, options) {
     var pipeTarget = 'pipegrunt-' + _.now().toString(),
         inputFiles,
         outputFiles,
@@ -209,9 +209,5 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
     }
 
     copyAndClean(finalFiles, pipeTarget, options.preclean, options.postclean);
-  }
-
-  return {
-    run: pipeTasks
   };
 };
