@@ -119,11 +119,14 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
   }
 
   function copyAndClean(files, pipeTarget, preclean, postclean) {
-    var normalizedFiles = grunt.task.normalizeMultiTaskFiles(files);
+    var normalizedFiles = grunt.task.normalizeMultiTaskFiles(files),
+        tempDirs;
 
     if (preclean) {
       _.each(normalizedFiles, function precleanLoop(file) {
-        grunt.file.delete(file.dest);
+        if (grunt.file.exists(file.dest)) {
+          grunt.file.delete(file.dest);
+        }
       });
     }
 
@@ -132,12 +135,12 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
     });
 
     if (postclean) {
-      glob.sync(path.join(pipeOptions.tempCwd, '.pipegrunt-*/'), function globLoop(errors, dirs) {
-        _.each(dirs, function postcleanLoop(dir) {
-          if (grunt.file.isDir(dir)) {
-            grunt.file.delete(dir);
-          }
-        });
+      tempDirs = glob.sync(path.join(pipeOptions.tempCwd, '.pipegrunt-*/'));
+
+      _.each(tempDirs, function postcleanLoop(dir) {
+        if (grunt.file.isDir(dir)) {
+          grunt.file.delete(dir);
+        }
       });
     }
   }
