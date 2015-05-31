@@ -1,10 +1,23 @@
 var _ = require('lodash'),
-    path = require('path'),
-    glob = require('glob');
+    path = require('path');
 
 module.exports = function pipeGrunt(grunt, pipeOptions) {
   pipeOptions = _.defaults({}, pipeOptions, {
     tempCwd: '.'
+  });
+
+  grunt.registerMultiTask('pipegrunt-clean', function cleanTask() {
+    _.each(this.filesSrc, function precleanLoop(filepath) {
+      if (grunt.file.exists(filepath)) {
+        grunt.file.delete(filepath);
+      }
+    });
+  });
+
+  grunt.registerMultiTask('pipegrunt-copy', function copyTask() {
+    _.each(this.files, function copyLoop(file) {
+      grunt.file.copy(file.src, file.dest);
+    });
   });
 
   function parseTaskInfo(input) {
@@ -119,30 +132,33 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
   }
 
   function copyAndClean(files, pipeTarget, preclean, postclean) {
-    var normalizedFiles = grunt.task.normalizeMultiTaskFiles(files),
-        tempDirs;
+    var config = {
+            'pipegrunt-clean': {},
+            'pipegrunt-copy': {}
+          },
+        tasks = [];
+
+    // One final task to move files to ultimate destination
 
     if (preclean) {
-      _.each(normalizedFiles, function precleanLoop(file) {
-        if (grunt.file.exists(file.dest)) {
-          grunt.file.delete(file.dest);
-        }
-      });
+      config['pipegrunt-clean'][pipeTarget + '-dest'] = {
+        src: [files.dest]
+      };
+      tasks.push('pipegrunt-clean:' + pipeTarget + '-dest');
     }
 
-    _.each(normalizedFiles, function copyLoop(file) {
-      grunt.file.copy(file.src, file.dest);
-    });
+    config['pipegrunt-copy'][pipeTarget] = {files: [files]};
+    tasks.push('pipegrunt-copy:' + pipeTarget);
 
     if (postclean) {
-      tempDirs = glob.sync(path.join(pipeOptions.tempCwd, '.pipegrunt-*/'));
-
-      _.each(tempDirs, function postcleanLoop(dir) {
-        if (grunt.file.isDir(dir)) {
-          grunt.file.delete(dir);
-        }
-      });
+      config['pipegrunt-clean'][pipeTarget + '-temps'] = {
+        src: [path.join(pipeOptions.tempCwd, '.pipegrunt-*/')]
+      };
+      tasks.push('pipegrunt-clean:' + pipeTarget + '-temps');
     }
+
+    grunt.config.merge(config);
+    grunt.task.run(tasks);
   }
 
   return function pipeTasks(taskList, originalFiles, options) {
