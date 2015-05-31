@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
-  var package = grunt.file.readJSON('package.json');
+  var package = grunt.file.readJSON('package.json'),
+      pipe = require('./pipe-grunt.js')(grunt);
 
   require('time-grunt')(grunt);
 
@@ -24,4 +25,21 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jscs');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+
+  grunt.registerTask('test', function testTask() {
+    pipe(
+      [
+          'copy',
+          'copy',
+          'copy'
+        ],
+      {
+          expand: true,
+          cwd: 'test',
+          src: '*.*',
+          dest: '.tmp'
+        }
+    );
+  });
 };
