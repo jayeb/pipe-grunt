@@ -1,6 +1,6 @@
 {
   "name": "pipe-grunt",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Helper for serializing Grunt tasks without worrying about interstitial file locations.",
   "main": "pipe-grunt",
   "files": [

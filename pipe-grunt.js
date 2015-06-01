@@ -168,7 +168,7 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
         finalFiles;
 
     options = _.defaults({}, options, {
-      preclean: true,
+      preclean: false,
       postclean: true
     });
 
