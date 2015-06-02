@@ -78,10 +78,15 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
                   dest;
 
               mappedSrcs = _.chain([fileObj.src]).flatten().map(function mapSrcs(src) {
-                var base = path.basename(src);
+                var base = path.basename(src),
+                    pathComponents = [];
 
                 if (_.contains(srcsBasenames, base)) {
-                  return path.join(srcsCwd, base);
+                  pathComponents.push(srcsCwd);
+                  pathComponents.push(_.rest(src.split(path.sep)));
+                  pathComponents = _.flatten(pathComponents);
+
+                  return path.join.apply(null, pathComponents);
                 } else {
                   return null;
                 }
