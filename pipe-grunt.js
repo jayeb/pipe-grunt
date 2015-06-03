@@ -152,7 +152,7 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
       tasks.push('pipegrunt-clean:' + pipeTarget + '-pre');
     }
 
-    config['pipegrunt-copy'][pipeTarget] = {files: [files]};
+    config['pipegrunt-copy'][pipeTarget] = {files: files};
     tasks.push('pipegrunt-copy:' + pipeTarget);
 
     if (postclean) {
@@ -168,6 +168,7 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
 
   return function pipeTasks(taskList, originalFiles, options) {
     var pipeTarget = 'pipegrunt-' + _.now().toString(),
+        normalizedOriginalFiles,
         inputFiles,
         outputFiles,
         finalFiles;
@@ -177,10 +178,12 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
       postclean: true
     });
 
-    inputFiles = _.chain(grunt.task.normalizeMultiTaskFiles(originalFiles))
-      .pluck('src')
-      .flatten()
-      .value();
+    if (_.isArray(originalFiles)) {
+      originalFiles = {files: originalFiles};
+    }
+    normalizedOriginalFiles = grunt.task.normalizeMultiTaskFiles(originalFiles);
+
+    inputFiles = _.chain(normalizedOriginalFiles).pluck('src').flatten().value();
 
     taskList = _.flatten([taskList]);
 
@@ -216,17 +219,17 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
       }, inputFiles);
 
       if (outputFiles.length) {
-        finalFiles = {
+        finalFiles = grunt.task.normalizeMultiTaskFiles({
           expand: true,
           cwd: path.dirname(outputFiles[0]),
           src: '**/*',
-          dest: originalFiles.dest
-        };
+          dest: normalizedOriginalFiles[0].dest
+        });
       } else {
-        finalFiles = originalFiles;
+        finalFiles = normalizedOriginalFiles;
       }
     } else {
-      finalFiles = originalFiles;
+      finalFiles = normalizedOriginalFiles;
     }
 
     copyAndClean(finalFiles, pipeTarget, options.preclean, options.postclean);
