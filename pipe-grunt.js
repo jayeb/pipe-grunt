@@ -146,20 +146,20 @@ module.exports = function pipeGrunt(grunt, pipeOptions) {
     // One final task to move files to ultimate destination
 
     if (preclean) {
-      config['pipegrunt-clean'][pipeTarget + '-dest'] = {
-        src: [files.dest]
+      config['pipegrunt-clean'][pipeTarget + '-pre'] = {
+        src: path.dirname(files[0].dest)
       };
-      tasks.push('pipegrunt-clean:' + pipeTarget + '-dest');
+      tasks.push('pipegrunt-clean:' + pipeTarget + '-pre');
     }
 
     config['pipegrunt-copy'][pipeTarget] = {files: [files]};
     tasks.push('pipegrunt-copy:' + pipeTarget);
 
     if (postclean) {
-      config['pipegrunt-clean'][pipeTarget + '-temps'] = {
+      config['pipegrunt-clean'][pipeTarget + '-post'] = {
         src: [path.join(pipeOptions.tempCwd, '.pipegrunt-*/')]
       };
-      tasks.push('pipegrunt-clean:' + pipeTarget + '-temps');
+      tasks.push('pipegrunt-clean:' + pipeTarget + '-post');
     }
 
     grunt.config.merge(config);
